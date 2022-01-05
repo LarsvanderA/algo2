@@ -1,6 +1,9 @@
+import java.util.Arrays;
+import java.util.PriorityQueue;
+
 public class Main {
 
-//    static final String S = Parser.read();
+    //    static final String S = Parser.read();
     static final String S = "MVMMMVVMMVMMVVVMVVM";
 
 
@@ -8,37 +11,49 @@ public class Main {
         System.out.println(algorithm(S));
     }
 
-    public static int algorithm (String str) {
+    public static int algorithm(String str) {
         String s = str;
         int result = 0;
-        while (s != "") {
-            int[] maxFolds = maxFolds(s);
-            int indexLargest = getIndexOfLargest(maxFolds);
+
+        PriorityQueue<Fold> PQueue = new PriorityQueue();
+        int min = Integer.MAX_VALUE;
+
+        Fold[] maxFolds = maxFolds(s, result);
+        Arrays.asList(maxFolds).stream().filter(n -> (n.getCurrentFolds() + 1) < min).forEach(n -> PQueue.add(n));
+
+        int indexLargest = getIndexOfLargest(maxFolds);
+        s = fold(s, maxFolds[indexLargest].getFoldSize(), indexLargest);
+        result++;
+
+        while (!PQueue.isEmpty()) {
+            Fold currentFold = PQueue.poll();
+            maxFolds = maxFolds(currentFold.getRemaining(), currentFold.getCurrentFolds());
+            Arrays.asList(maxFolds).stream().filter(n -> (n.getCurrentFolds() + 1) < min).forEach(n -> PQueue.add(n));
+
+            indexLargest = getIndexOfLargest(maxFolds);
             if (indexLargest == -1) {
                 break;
             }
-            s = fold(s, maxFolds[indexLargest], indexLargest);
+            s = fold(s, maxFolds[indexLargest].getFoldSize(), indexLargest);
             result++;
         }
 
         return result;
     }
 
-    public static int getIndexOfLargest( int[] array )
-    {
-        if ( array == null || array.length == 0 ) return -1; // null or empty
+    public static int getIndexOfLargest(Fold[] array) {
+        if (array == null || array.length == 0) return -1; // null or empty
 
         int largest = 0;
-        for ( int i = 1; i < array.length; i++ )
-        {
-            if ( array[i] > array[largest] ) largest = i;
+        for (int i = 1; i < array.length; i++) {
+            if (array[i].getFoldSize() > array[largest].getFoldSize()) largest = i;
         }
         return largest; // position of the first largest found
     }
 
-    public static String fold (String str, int amount, int index){
+    public static String fold(String str, int amount, int index) {
         StringBuilder stringBuilder = new StringBuilder(str);
-        for(int i = 0; i <= amount; i++){
+        for (int i = 0; i <= amount; i++) {
             stringBuilder.deleteCharAt(index);
         }
         return stringBuilder.toString();
