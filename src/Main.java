@@ -12,33 +12,31 @@ public class Main {
     }
 
     public static int algorithm(String str) {
-        String s = str;
-        int result = 0;
 
         PriorityQueue<Fold> PQueue = new PriorityQueue();
         int min = Integer.MAX_VALUE;
 
-        Fold[] maxFolds = maxFolds(s, result);
-        Arrays.asList(maxFolds).stream().filter(n -> (n.getCurrentFolds() + 1) < min).forEach(n -> PQueue.add(n));
-
-        int indexLargest = getIndexOfLargest(maxFolds);
-        s = fold(s, maxFolds[indexLargest].getFoldSize(), indexLargest);
-        result++;
+        Fold[] maxFolds = maxFolds(str, 0);
+        Arrays.asList(maxFolds).stream().filter(n -> (n.getCurrentFolds() + 1) < min).forEach(n -> {
+            if (n.getRemaining() != "") {
+                PQueue.add(n);
+            } else {
+                min = Math.min(0, n.getCurrentFolds());
+            }
+        });
 
         while (!PQueue.isEmpty()) {
             Fold currentFold = PQueue.poll();
             maxFolds = maxFolds(currentFold.getRemaining(), currentFold.getCurrentFolds());
             Arrays.asList(maxFolds).stream().filter(n -> (n.getCurrentFolds() + 1) < min).forEach(n -> PQueue.add(n));
 
-            indexLargest = getIndexOfLargest(maxFolds);
+            int indexLargest = getIndexOfLargest(maxFolds);
             if (indexLargest == -1) {
                 break;
             }
-            s = fold(s, maxFolds[indexLargest].getFoldSize(), indexLargest);
-            result++;
         }
 
-        return result;
+        return min;
     }
 
     public static int getIndexOfLargest(Fold[] array) {
