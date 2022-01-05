@@ -45,10 +45,12 @@ public class Main {
     }
 
 
-    public static int[] maxFolds (String str) {
-        int[] result = new int[str.length()];
+    public static Fold[] maxFolds(String str, int folds) {
+        Fold[] result = new Fold[str.length()];
         for (int i = 0; i < str.length(); i++) {
-            result[i] = biggestPartition(str, i);
+            int amount = biggestPartition(str, i);
+            Fold f = new Fold(folds+1, fold(str, amount, i), amount);
+            result[i] = f;
         }
 
         return result;
