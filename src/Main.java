@@ -3,8 +3,8 @@ import java.util.PriorityQueue;
 
 public class Main {
 
-    //    static final String S = Parser.read();
-    static final String S = "MVMMMVVMMVMMVVVMVVM";
+        static final String S = Parser.read();
+//    static final String S = "MVMMMVVMMVMMVVVMVVM";
 
 
     public static void main(String[] args) {
