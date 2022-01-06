@@ -1,7 +1,7 @@
 public class Main {
 
 //    static final String S = Parser.read();
-    static final String S = "MVMMMVVMMVMMVVVMVVM";
+    static final String S = "MMMMVVM";
 
 
     public static void main(String[] args) {
