@@ -3,8 +3,8 @@ import java.util.PriorityQueue;
 
 public class Main {
 
-        static final String S = Parser.read();
-//    static final String S = "MVMMMVVMMVMMVVVMVVM";
+//        static final String S = Parser.read();
+    static final String S = "MVMVMVMVMVMVMVMV";
 
 
     public static void main(String[] args) {
@@ -12,23 +12,42 @@ public class Main {
     }
 
     public static int algorithm(String str) {
-
         PriorityQueue<Fold> PQueue = new PriorityQueue();
         int min = Integer.MAX_VALUE;
 
         Fold[] maxFolds = maxFolds(str, 0);
-        Arrays.asList(maxFolds).stream().filter(n -> (n.getCurrentFolds() + 1) < min).forEach(n -> {
-            if (n.getRemaining() != "") {
-                PQueue.add(n);
-            } else {
-                min = Math.min(0, n.getCurrentFolds());
+        if(maxFolds[0].getCurrentFolds() < min) {
+            for(Fold f : maxFolds){
+                if (f.getRemaining() == ""){
+                    min = f.getCurrentFolds();
+                } else{
+                    PQueue.add(f);
+                }
             }
-        });
+        }
+//        Arrays.asList(maxFolds).stream().filter(n -> (n.getCurrentFolds() + 1) < min).forEach(n ->
+
+//            if (n.getRemaining() != "") {
+//                PQueue.add(n);
+//            } else {
+//                min = Math.min(0, n.getCurrentFolds());
+//            }
+//        });
 
         while (!PQueue.isEmpty()) {
             Fold currentFold = PQueue.poll();
             maxFolds = maxFolds(currentFold.getRemaining(), currentFold.getCurrentFolds());
-            Arrays.asList(maxFolds).stream().filter(n -> (n.getCurrentFolds() + 1) < min).forEach(n -> PQueue.add(n));
+//            Arrays.asList(maxFolds).stream().filter(n -> (n.getCurrentFolds() + 1) < min).forEach(n -> PQueue.add(n));
+
+            if(maxFolds[0].getCurrentFolds() < min) {
+                for(Fold f : maxFolds){
+                    if (f.getRemaining() == ""){
+                        min = f.getCurrentFolds();
+                    } else{
+                        PQueue.add(f);
+                    }
+                }
+            }
 
             int indexLargest = getIndexOfLargest(maxFolds);
             if (indexLargest == -1) {
