@@ -1,26 +1,40 @@
+import java.util.LinkedList;
+import java.util.*;
+
 public class Main {
 
-    static final String S = Parser.read();
+//    static final String S = Parser.read();
+    static final String S = "VVMMMVMVVVMVMMMVV";
+    static int minimum = Integer.MAX_VALUE;
 
 
     public static void main(String[] args) {
-        System.out.println(algorithm(S));
+        ArrayList<String> s = new ArrayList<>();
+        s.add(S);
+        algorithm(s, 0);
+        System.out.println(minimum);
     }
 
-    public static int algorithm (String str) {
-        String s = str;
-        int result = 0;
-        while (s != "") {
-            int[] maxFolds = maxFolds(s);
-            int indexLargest = getIndexOfLargest(maxFolds);
-            if (indexLargest == -1) {
-                break;
+    public static void algorithm (List<String> strs, int result) {
+        // Base case
+        if (strs.get(strs.size()-1) == "") {
+            if (result < minimum) {
+                minimum = result;
             }
-            s = fold(s, maxFolds[indexLargest], indexLargest);
-            result++;
-        }
+        } else {
+            // Recursive case
 
-        return result;
+            // Get all possible folds
+            List<List<String>> possibleFolds = new LinkedList<>(maxFolds(strs));
+
+
+            // For all possible folds call this function
+            for (List<String> newStr : possibleFolds) {
+                if (!(result + 1 >= minimum)){
+                    algorithm(newStr, result + 1);
+                }
+            }
+        }
     }
 
     public static int getIndexOfLargest( int[] a )
@@ -47,38 +61,46 @@ public class Main {
         return stringBuilder.toString();
     }
 
-    public static int[] maxFolds (String str) {
-        int[] result = new int[str.length()];
-        for (int i = 0; i < str.length(); i++) {
-            result[i] = biggestPartition(str, i);
+    public static List<List<String>> maxFolds (List<String> strs) {
+        List<List<String>> result = new LinkedList<>();
+        for (int i = 0; i < strs.get(strs.size()-1).length(); i++) {
+            result.add(biggestPartition(strs, i));
         }
 
         return result;
     }
 
-    public static int biggestPartition(String str, int startIndex) {
+    public static List<String> biggestPartition(List<String> strs, int startIndex) {
+        String str = strs.get(strs.size()-1);
         int minIndex = startIndex - 1;
         int maxIndex = startIndex + 1;
+        int result = 0;
 
         if (minIndex >= 0 && maxIndex < str.length()) {
             if (!(str.charAt(minIndex) == str.charAt(maxIndex))) {
-                return biggestPartition(str, 1, minIndex, maxIndex);
+                return biggestPartition(strs, result + 1, minIndex, maxIndex, startIndex);
             }
         }
-        return 0;
+        strs.add(fold(str, result, startIndex));
+
+        return strs;
 
     }
 
-    public static int biggestPartition(String str, int result, int minIndex, int maxIndex) {
+    public static List<String> biggestPartition(List<String> strs, int result, int minIndex, int maxIndex, int startIndex) {
+        String str = strs.get(strs.size()-1);
         int min = minIndex - 1;
         int max = maxIndex + 1;
 
         if (min >= 0 && max < str.length()) {
             if (!(str.charAt(min) == str.charAt(max))) {
-                return biggestPartition(str, (result + 1), min, max);
+                return biggestPartition(strs, (result + 1), min, max, startIndex);
             }
         }
-        return result;
+
+        strs.add(fold(str, result, startIndex));
+
+        return strs;
     }
 
 
