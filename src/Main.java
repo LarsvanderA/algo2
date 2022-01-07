@@ -1,7 +1,7 @@
 public class Main {
 
 //    static final String S = Parser.read();
-    static final String S = "MMMMVVM";
+    static final String S = "MVVMVVMMVVVVMMMVVVVMMVMVV";
 
 
     public static void main(String[] args) {
@@ -17,34 +17,30 @@ public class Main {
             if (indexLargest == -1) {
                 break;
             }
-            s = fold2(s, maxFolds[indexLargest], indexLargest);
+            s = fold(s, maxFolds[indexLargest], indexLargest);
             result++;
         }
 
         return result;
     }
 
-    public static int getIndexOfLargest( int[] array )
+    public static int getIndexOfLargest( int[] a )
     {
-        if ( array == null || array.length == 0 ) return -1; // null or empty
+        if ( a == null || a.length == 0 ) {
+            return -1;
+        }
 
         int largest = 0;
-        for ( int i = 1; i < array.length; i++ )
+        for ( int i = 1; i < a.length; i++ )
         {
-            if ( array[i] > array[largest] ) largest = i;
+            if ( a[i] > a[largest] ){
+                largest = i;
+            }
         }
-        return largest; // position of the first largest found
+        return largest;
     }
 
     public static String fold (String str, int amount, int index){
-        StringBuilder stringBuilder = new StringBuilder(str);
-        for(int i = 0; i <= amount; i++){
-            stringBuilder.deleteCharAt(index);
-        }
-        return stringBuilder.toString();
-    }
-
-    public static String fold2 (String str, int amount, int index){
         StringBuilder stringBuilder = new StringBuilder(str);
         for(int i = 0; i <= amount; i++){
             stringBuilder.deleteCharAt(index-amount);
